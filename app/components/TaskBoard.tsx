@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable";
 import TaskCard from "./TaskCard";
@@ -87,6 +87,13 @@ const priorities = ["High", "Medium", "Low", "No Priority"];
 export default function TaskBoard() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  if (!mounted) return null;
 
   // Функция сортировки внутри колонки
   const handleDragEnd = (event: DragEndEvent, priority: string) => {
