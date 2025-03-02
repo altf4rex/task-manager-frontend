@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Task } from "./TaskBoard";
+import React, { useState } from 'react';
+import { Task } from './TaskBoard';
 
 interface TaskModalProps {
   task: Task;
@@ -9,7 +9,7 @@ interface TaskModalProps {
   onUpdate: (task: Task) => void;
 }
 
-const statuses = ["Not Started", "In Progress", "Blocked", "Done"];
+const statuses = ['Not Started', 'In Progress', 'Blocked', 'Done'];
 
 export default function TaskModal({ task, onClose, onUpdate }: TaskModalProps) {
   const [title, setTitle] = useState(task.title);
@@ -21,28 +21,31 @@ export default function TaskModal({ task, onClose, onUpdate }: TaskModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
-      <div className="bg-neutral-800 text-white rounded-lg p-6 w-96">
-        <h2 className="text-2xl font-bold mb-4">Task Details</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div className="bg-white dark:bg-slate-800 w-full max-w-md rounded shadow-lg p-6">
+        <h2 className="text-xl font-bold mb-4 dark:text-white">Task Details</h2>
 
-        <label className="block mb-2 font-semibold">Title:</label>
+        <label className="block mb-2 font-semibold dark:text-gray-200">Title:</label>
         <input
           type="text"
-          className="w-full border border-neutral-600 bg-neutral-700 p-2 mb-4 rounded"
+          className="w-full border border-gray-300 dark:border-slate-600 rounded px-3 py-2 mb-4
+                     dark:bg-slate-700 dark:text-white"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        <label className="block mb-2 font-semibold">Description:</label>
+        <label className="block mb-2 font-semibold dark:text-gray-200">Description:</label>
         <textarea
-          className="w-full border border-neutral-600 bg-neutral-700 p-2 mb-4 rounded"
+          className="w-full border border-gray-300 dark:border-slate-600 rounded px-3 py-2 mb-4
+                     dark:bg-slate-700 dark:text-white"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        <label className="block mb-2 font-semibold">Status:</label>
+        <label className="block mb-2 font-semibold dark:text-gray-200">Status:</label>
         <select
-          className="w-full border border-neutral-600 bg-neutral-700 p-2 mb-4 rounded"
+          className="w-full border border-gray-300 dark:border-slate-600 rounded px-3 py-2 mb-4
+                     dark:bg-slate-700 dark:text-white"
           value={status}
           onChange={(e) => setStatus(e.target.value)}
         >
@@ -53,16 +56,20 @@ export default function TaskModal({ task, onClose, onUpdate }: TaskModalProps) {
           ))}
         </select>
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-3 mt-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded bg-gray-600 hover:bg-gray-500"
+            className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400
+                       dark:bg-slate-600 dark:text-white dark:hover:bg-slate-500"
           >
             Cancel
           </button>
           <button
-            onClick={handleSave}
-            className="px-4 py-2 rounded bg-blue-600 hover:bg-blue-500"
+            onClick={() => {
+              handleSave();
+              onClose();
+            }}
+            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"
           >
             Save
           </button>
@@ -71,3 +78,4 @@ export default function TaskModal({ task, onClose, onUpdate }: TaskModalProps) {
     </div>
   );
 }
+

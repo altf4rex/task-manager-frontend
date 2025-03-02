@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { Card, CardContent, Typography } from "@mui/material";
-import { Task } from "./TaskBoard";
+import React from 'react';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Card, CardContent, Typography } from '@mui/material';
+import { Task } from './TaskBoard';
 
 interface TaskCardProps {
   task: Task;
@@ -19,44 +19,41 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    marginBottom: "8px",
-    cursor: "grab",
+    marginBottom: '8px',
+    cursor: 'grab',
   };
 
-  // Цвет бейджа статуса (примерно)
-  const statusColor = {
-    "Not Started": "bg-gray-500",
-    "In Progress": "bg-blue-600",
-    "Blocked": "bg-red-600",
-    "Done": "bg-green-600",
-  }[task.status] || "bg-gray-500";
+  const statusColor: Record<string, string> = {
+    'Not Started': '#3B82F6', // синий
+    'In Progress': '#F59E0B', // жёлтый/оранж
+    Blocked: '#EF4444',      // красный
+    Done: '#10B981',         // зелёный
+  };
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      onClick={onClick}
-    >
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card
-        variant="outlined"
+        onClick={onClick}
         sx={{
-          backgroundColor: "#1f2937", // bg-neutral-800
-          color: "#fff",
-          borderColor: "#374151",     // border-neutral-700
+          borderColor: 'divider',
+          '&:hover': { boxShadow: 4 },
         }}
+        variant="outlined"
       >
         <CardContent>
           <Typography variant="h6" gutterBottom>
             {task.title}
           </Typography>
-          <div className="flex items-center justify-between">
-            <Typography variant="body2" color="#9ca3af">
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {task.description}
+          </Typography>
+          <div className="flex items-center justify-between mt-2">
+            <Typography variant="body2" color="text.secondary">
               {task.dueDate}
             </Typography>
             <div
-              className={`px-2 py-1 text-xs rounded ${statusColor}`}
+              className="px-2 py-1 text-xs rounded text-white"
+              style={{ backgroundColor: statusColor[task.status] ?? '#3B82F6' }}
             >
               {task.status}
             </div>
