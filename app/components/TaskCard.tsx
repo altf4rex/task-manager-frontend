@@ -3,19 +3,25 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Card, CardContent, Typography, IconButton } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 import { Task } from './TaskBoard';
 
 interface TaskCardProps {
   task: Task;
-  onClick: () => void;
+  onClick: () => void; // открытие модального окна с подробностями
 }
+
 
 export default function TaskCard({ task, onClick }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: task.id,
   });
 
+  const handleClick = () => {
+    onClick()
+  }
+  
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -25,15 +31,14 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
 
   const statusColor: Record<string, string> = {
     'Not Started': '#3B82F6', // синий
-    'In Progress': '#F59E0B', // жёлтый/оранж
-    Blocked: '#EF4444',      // красный
-    Done: '#10B981',         // зелёный
+    'In Progress': '#F59E0B', // жёлтый/оранжевый
+    Blocked: '#EF4444',       // красный
+    Done: '#10B981',          // зелёный
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card
-        onClick={onClick}
         sx={{
           borderColor: 'divider',
           '&:hover': { boxShadow: 4 },
@@ -58,9 +63,23 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
               {task.status}
             </div>
           </div>
+          {/* Кнопка для открытия модального окна */}
+          <div className="flex justify-end mt-2">
+          <IconButton
+  size="small"
+  color="primary"
+  onClick={(e) => {
+    e.stopPropagation(); // предотвращаем перехват события dnd-kit
+    handleClick();
+  }}
+  onPointerDown={(e) => e.stopPropagation()}
+>
+  <InfoIcon />
+</IconButton>
+
+          </div>
         </CardContent>
       </Card>
     </div>
   );
 }
-

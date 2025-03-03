@@ -1,4 +1,3 @@
-// Home.tsx
 "use client";
 
 import * as React from "react";
@@ -27,8 +26,7 @@ import type { Navigation, Router, Session } from "@toolpad/core/AppProvider";
 import TaskBoard from "./components/TaskBoard";
 import Header from "./components/Header";
 
-
-
+// Пример навигации и темы
 const NAVIGATION: Navigation = [
   {
     kind: "header",
@@ -60,11 +58,11 @@ const demoTheme = createTheme({
         },
         background: {
           default: '#bbdefb', // Светлый фон
-          paper: '#bbdefb',   // Бумага
+          paper: '#bbdefb',
         },
         text: {
-          primary: '#1e293b',  // Темно-синий
-          secondary: '#64748b', // Серый
+          primary: '#1e293b',
+          secondary: '#64748b',
         }
       }
     },
@@ -76,12 +74,12 @@ const demoTheme = createTheme({
           dark: '#6366f1',
         },
         background: {
-          default: '#0f172a', // Темный фон
-          paper: '#1e293b',   // Бумага
+          default: '#0f172a',
+          paper: '#1e293b',
         },
         text: {
-          primary: '#f8fafc',  // Белый
-          secondary: '#94a3b8', // Светло-серый
+          primary: '#f8fafc',
+          secondary: '#94a3b8',
         }
       }
     }
@@ -112,6 +110,7 @@ function DemoPageContent({ pathname }: { pathname: string }) {
     </Box>
   );
 }
+
 function AccountSidebarPreview(props: AccountPreviewProps & { mini: boolean }) {
   const { handleClick, open, mini } = props;
   return (
@@ -250,10 +249,6 @@ function SidebarFooterAccount({ mini }: SidebarFooterProps) {
 }
 
 interface DemoProps {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * Remove this when copying and pasting into your project.
-   */
   window?: () => Window;
 }
 
@@ -279,15 +274,11 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
 
   const demoWindow = window !== undefined ? window() : undefined;
 
-  const [session, setSession] = React.useState<{ user: { name: string; email: string; image: string; } } | null>(demoSession);
+  const [session, setSession] = React.useState(demoSession);
   const authentication = React.useMemo(() => {
     return {
-      signIn: () => {
-        setSession(demoSession);
-      },
-      signOut: () => {
-        setSession(null);
-      },
+      signIn: () => setSession(demoSession),
+      signOut: () => setSession(null),
     };
   }, []);
 
@@ -299,9 +290,28 @@ export default function DashboardLayoutAccountSidebar(props: DemoProps) {
       window={demoWindow}
       authentication={authentication}
       session={session}
+      branding={{
+        logo: <img src="/my-logo.png" alt="My Logo" />,
+        title: "My Dashboard",
+        homeUrl: "/home",
+      }}
     >
       <DashboardLayout
-        slots={{ toolbarAccount: () => null, sidebarFooter: SidebarFooterAccount }}
+        slots={{
+          // Если хотите изменить заголовок, можно также переопределить appTitle через slotProps
+          toolbarActions: Header,
+          toolbarAccount: () => null,
+          sidebarFooter: SidebarFooterAccount,
+        }}
+        slotProps={{
+          appTitle: {
+            branding: {
+              logo: <img src="https://mui.com/static/logo.png" alt="My Logo" style={{ height: 24 }} />,
+              title: 'Моя кастомная панель',
+              homeUrl: '/home',
+            },
+          },
+        }}
       >
         <div className="flex flex-col h-full">
           <div className="flex-grow">
