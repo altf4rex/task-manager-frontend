@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Button, ButtonGroup, IconButton, styled } from '@mui/material';
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { useColorScheme } from '@mui/material/styles';
+import { ThemeSwitcher } from '@toolpad/core/DashboardLayout';
 
 const StyledButtonGroup = styled(ButtonGroup)(({ theme }) => ({
   borderRadius: '8px!important',
@@ -68,9 +69,7 @@ export default function CustomToolbarActions() {
           Month
         </PeriodButton>
       </StyledButtonGroup>
-      <IconButton onClick={toggleTheme} color="inherit">
-        {mode === 'light' ? <Brightness4 /> : <Brightness7 />}
-      </IconButton>
+      <ThemeSwitcher/> 
     </div>
   );
 }

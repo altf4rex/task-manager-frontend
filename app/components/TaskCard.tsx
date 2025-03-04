@@ -1,49 +1,44 @@
-'use client';
+// components/TaskCard.tsx
+"use client";
 
-import React from 'react';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
-import { Card, CardContent, Typography, IconButton } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
-import { Task } from './TaskBoard';
+import React from "react";
+import Link from "next/link";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import { Task } from "./TaskBoard";
 
 interface TaskCardProps {
   task: Task;
-  onClick: () => void; // открытие модального окна с подробностями
 }
 
+export default function TaskCard({ task }: TaskCardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: task.id });
 
-export default function TaskCard({ task, onClick }: TaskCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
-    id: task.id,
-  });
-
-  const handleClick = () => {
-    onClick()
-  }
-  
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    marginBottom: '8px',
-    cursor: 'grab',
+    marginBottom: "8px",
+    cursor: "grab",
   };
 
   const statusColor: Record<string, string> = {
-    'Not Started': '#3B82F6', // синий
-    'In Progress': '#F59E0B', // жёлтый/оранжевый
-    Blocked: '#EF4444',       // красный
-    Done: '#10B981',          // зелёный
+    "Not Started": "#3B82F6",
+    "In Progress": "#F59E0B",
+    Blocked: "#EF4444",
+    Done: "#10B981",
   };
 
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <Card
-        sx={{
-          borderColor: 'divider',
-          '&:hover': { boxShadow: 4 },
-        }}
         variant="outlined"
+        sx={{
+          borderColor: "divider",
+          "&:hover": { boxShadow: 4 },
+        }}
       >
         <CardContent>
           <Typography variant="h6" gutterBottom>
@@ -52,32 +47,35 @@ export default function TaskCard({ task, onClick }: TaskCardProps) {
           <Typography variant="body2" color="text.secondary" noWrap>
             {task.description}
           </Typography>
-          <div className="flex items-center justify-between mt-2">
+          <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
             <Typography variant="body2" color="text.secondary">
               {task.dueDate}
             </Typography>
-            <div
-              className="px-2 py-1 text-xs rounded text-white"
-              style={{ backgroundColor: statusColor[task.status] ?? '#3B82F6' }}
+            <Box
+              sx={{
+                px: 1,
+                py: 0.5,
+                fontSize: "0.75rem",
+                borderRadius: 1,
+                color: "#fff",
+                backgroundColor: statusColor[task.status] || "#3B82F6",
+              }}
             >
               {task.status}
-            </div>
-          </div>
-          {/* Кнопка для открытия модального окна */}
-          <div className="flex justify-end mt-2">
-          <IconButton
-  size="small"
-  color="primary"
-  onClick={(e) => {
-    e.stopPropagation(); // предотвращаем перехват события dnd-kit
-    handleClick();
-  }}
-  onPointerDown={(e) => e.stopPropagation()}
->
-  <InfoIcon />
-</IconButton>
-
-          </div>
+            </Box>
+          </Box>
+          {/* Вместо локального onClick => <Link> */}
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+            <Link href={`/tasks/${task.id}`} style={{ color: "inherit" }}>
+              <IconButton
+                size="small"
+                color="primary"
+                onPointerDown={(e) => e.stopPropagation()}
+              >
+                <InfoIcon />
+              </IconButton>
+            </Link>
+          </Box>
         </CardContent>
       </Card>
     </div>
