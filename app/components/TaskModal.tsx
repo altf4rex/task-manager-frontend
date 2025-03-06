@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { Task } from "./TaskBoard";
+import { Task } from "@/store/taskStore";
 
 interface TaskModalProps {
   open: boolean;
@@ -31,12 +31,12 @@ export default function TaskModal({
   onUpdate,
 }: TaskModalProps) {
   const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description);
+  const [description, setDescription] = useState(task.description || "");
   const [status, setStatus] = useState(task.status);
 
   useEffect(() => {
     setTitle(task.title);
-    setDescription(task.description);
+    setDescription(task.description || "");
     setStatus(task.status);
   }, [task]);
 
@@ -55,7 +55,6 @@ export default function TaskModal({
           sx: {
             p: 2,
             borderRadius: 2,
-            // Используем значение из темы для поддержки светлой/тёмной темы:
             backgroundColor: (theme) => theme.palette.background.paper,
             boxShadow: 24,
           },
@@ -70,7 +69,6 @@ export default function TaskModal({
       <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.25rem" }}>
         Task Details
       </DialogTitle>
-
       <DialogContent dividers>
         <TextField
           label="Title"
@@ -80,7 +78,6 @@ export default function TaskModal({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-
         <TextField
           label="Description"
           fullWidth
@@ -91,13 +88,12 @@ export default function TaskModal({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-
         <FormControl fullWidth margin="dense" variant="outlined">
           <InputLabel>Status</InputLabel>
           <Select
             label="Status"
             value={status}
-            onChange={(e) => setStatus(e.target.value as string)}
+            onChange={(e) => setStatus(e.target.value as any)}
           >
             {statuses.map((s) => (
               <MenuItem key={s} value={s}>
@@ -107,7 +103,6 @@ export default function TaskModal({
           </Select>
         </FormControl>
       </DialogContent>
-
       <DialogActions>
         <Button onClick={onClose} variant="outlined" color="secondary">
           Cancel

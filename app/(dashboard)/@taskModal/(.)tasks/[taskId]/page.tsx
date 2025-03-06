@@ -1,43 +1,31 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import TaskModal from "../../../../components/TaskModal";
-import { useState, useEffect } from "react";
-import React from "react";
+import { useStore } from "@/store/taskStore";
+import { useEffect, useState } from "react";
 
-export default function TaskModalPage({
-  params,
-}: {
-  params: Promise<{ taskId: string }>;
-}) {
-  // Разворачиваем params, чтобы получить объект с параметрами
-  const resolvedParams = React.use(params);
-  const { taskId } = resolvedParams;
-
+export default function EditTaskModalPage() {
   const router = useRouter();
-  const [task, setTask] = useState<any | null>(null);
+  const { taskId } = useParams();
+  const { tasks, updateTask, fetchTasks } = useStore();
+  const [task, setTask] = useState<any>(null);
 
   useEffect(() => {
-    // Имитация загрузки данных о задаче
-    setTask({
-      id: taskId,
-      title: "Some Task Title",
-      description: "Some description",
-      status: "In Progress",
-    });
-  }, [taskId]);
+    const foundTask = tasks.find((t) => t.id.toString() === taskId);
+    if (foundTask) setTask(foundTask);
+  }, [taskId, tasks]);
 
-  if (!task) {
-    return null; // или компонент загрузки (Loader)
-  }
+  if (!task) return null;
 
   return (
     <TaskModal
       open={true}
       task={task}
       onClose={() => router.back()}
-      onUpdate={(updatedTask: any) => {
-        console.log("Updated task:", updatedTask);
+      onUpdate={async (updatedTask: any) => {
+        await updateTask(task.id, updatedTask);
+        await fetchTasks();
         router.back();
       }}
     />

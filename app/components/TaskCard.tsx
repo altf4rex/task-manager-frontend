@@ -7,7 +7,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
-import { Task } from "./TaskBoard";
+import { Task } from "@/store/taskStore"; // Импортируем из store
 
 interface TaskCardProps {
   task: Task;
@@ -49,7 +49,7 @@ export default function TaskCard({ task }: TaskCardProps) {
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
             <Typography variant="body2" color="text.secondary">
-              {task.dueDate}
+              {task.isDaily}
             </Typography>
             <Box
               sx={{
