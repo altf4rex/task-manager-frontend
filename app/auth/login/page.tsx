@@ -22,7 +22,7 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       await loginUser({ email, password });
-      router.push("/dashboard");
+      router.push("/");
     } catch (error) {
       console.error("Login failed", error);
     }
