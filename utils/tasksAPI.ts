@@ -9,13 +9,13 @@ enum Priority {
 
 // Получить все задачи (опционально можно передавать фильтры, например, по дню или по категории)
 export const getAllTasks = async (params?: { filter?: string; categoryId?: number }) => {
-  const response = await apiClient.get("/tasks", { params });
+  const response = await apiClient.get("/api/v1/tasks", { params });
   return response.data;
 };
 
 // Получить задачу по ID
 export const getTaskById = async (id: number) => {
-  const response = await apiClient.get(`/tasks/${id}`);
+  const response = await apiClient.get(`/api/v1/tasks/${id}`);
   return response.data;
 };
 
@@ -28,7 +28,7 @@ export const createTask = async (task: {
   scheduledAt: string;
   categoryId: number;
 }) => {
-  const response = await apiClient.post("/tasks", task);
+  const response = await apiClient.post("/api/v1/tasks", task);
   return response.data;
 };
 
@@ -44,12 +44,12 @@ export const updateTask = async (
     categoryId: number;
   }>
 ) => {
-  const response = await apiClient.patch(`/tasks/${id}`, task);
+  const response = await apiClient.patch(`/api/v1/tasks/${id}`, task);
   return response.data;
 };
 
 // Удалить задачу по ID
 export const deleteTask = async (id: number) => {
-  const response = await apiClient.delete(`/tasks/${id}`);
+  const response = await apiClient.delete(`/api/v1/tasks/${id}`);
   return response.data;
 };
