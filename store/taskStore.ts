@@ -8,7 +8,7 @@ export type Task = {
   id: number;
   title: string;
   description?: string;
-  status: "Not Started" | "In Progress" | "Blocked" | "Done"; // Добавляем status
+  status: "Not Started" | "In Progress" | "Blocked" | "Done";
   priority: "DAY" | "WEEK" | "MONTH";
   isCompleted: boolean;
   isDaily: boolean;
@@ -37,18 +37,22 @@ interface StoreState {
   tasks: Task[];
   categories: Category[];
   taskFilter: "day" | "week" | "month";
-  setTaskFilter: (filter: "day" | "week" | "month") => void;
+  // Методы для обновления глобальных состояний
   setUser: (user: User | null) => void;
+  setTaskFilter: (filter: "day" | "week" | "month") => void;
   setTasks: (tasks: Task[]) => void;
   setCategories: (categories: Category[]) => void;
+  // Действия для задач
   fetchTasks: (params?: { filter?: string; categoryId?: number }) => Promise<void>;
   createTask: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => Promise<void>;
   updateTask: (id: number, task: Partial<Task>) => Promise<void>;
   deleteTask: (id: number) => Promise<void>;
+  // Действия для категорий
   fetchCategories: () => Promise<void>;
   createCategory: (category: Omit<Category, "id" | "createdAt" | "updatedAt">) => Promise<void>;
   updateCategory: (id: number, category: Partial<Category>) => Promise<void>;
   deleteCategory: (id: number) => Promise<void>;
+  // Действия для авторизации
   loginUser: (credentials: { email: string; password: string }) => Promise<void>;
   registerUser: (data: { email: string; password: string; name?: string }) => Promise<void>;
   logout: () => void;
@@ -59,11 +63,14 @@ export const useStore = create<StoreState>((set, get) => ({
   tasks: [],
   categories: [],
   taskFilter: "day",
+
+  // Установка пользователя, фильтра, задач и категорий
   setUser: (user) => set({ user }),
   setTaskFilter: (filter) => set({ taskFilter: filter }),
   setTasks: (tasks) => set({ tasks }),
   setCategories: (categories) => set({ categories }),
 
+  // Загрузка задач с учетом глобального фильтра
   fetchTasks: async (params = {}) => {
     try {
       const filter = params.filter ?? get().taskFilter;
@@ -101,6 +108,7 @@ export const useStore = create<StoreState>((set, get) => ({
     }
   },
 
+  // Загрузка категорий
   fetchCategories: async () => {
     try {
       const data = await getAllCategories();
@@ -122,7 +130,11 @@ export const useStore = create<StoreState>((set, get) => ({
   updateCategory: async (id, categoryData) => {
     try {
       const updatedCategory = await updateCategory(id, categoryData);
-      set({ categories: get().categories.map((c) => (c.id === id ? { ...c, ...updatedCategory } : c)) });
+      set({
+        categories: get().categories.map((c) =>
+          c.id === id ? { ...c, ...updatedCategory } : c
+        ),
+      });
     } catch (error) {
       console.error("Failed to update category:", error);
     }
@@ -137,12 +149,14 @@ export const useStore = create<StoreState>((set, get) => ({
     }
   },
 
+  // Авторизация
   loginUser: async (credentials) => {
     try {
       const data = await login(credentials);
       set({ user: data.user });
     } catch (error) {
       console.error("Failed to login:", error);
+      throw error;
     }
   },
 
@@ -152,6 +166,7 @@ export const useStore = create<StoreState>((set, get) => ({
       set({ user: response.user });
     } catch (error) {
       console.error("Failed to register:", error);
+      throw error;
     }
   },
 

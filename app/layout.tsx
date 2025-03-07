@@ -7,7 +7,12 @@ import theme from '../theme'; // убедитесь, что файл theme.ts с
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import type { Navigation } from '@toolpad/core/AppProvider';
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Task Manager',
+  description: 'Manage your life',
+}
 // Пример навигации
 const NAVIGATION: Navigation = [
   { kind: 'header', title: 'Main items' },
