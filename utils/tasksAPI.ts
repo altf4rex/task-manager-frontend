@@ -22,7 +22,7 @@ export const getTaskById = async (id: number) => {
 export const createTask = async (task: {
   title: string;
   description?: string;
-  status: "Not Started" | "In Progress" | "Blocked" | "Done";
+  isCompleted: boolean;
   priority: "DAY" | "WEEK" | "MONTH";
   isDaily?: boolean;
   scheduledAt: string;
@@ -37,7 +37,6 @@ export const updateTask = async (
   task: Partial<{
     title: string;
     description: string;
-    status: "Not Started" | "In Progress" | "Blocked" | "Done";
     priority: "DAY" | "WEEK" | "MONTH";
     isCompleted: boolean;
     isDaily: boolean;

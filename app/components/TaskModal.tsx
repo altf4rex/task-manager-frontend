@@ -32,16 +32,16 @@ export default function TaskModal({
 }: TaskModalProps) {
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
-  const [status, setStatus] = useState(task.status);
+  const [isCompleted, setStatus] = useState(task.isCompleted);
 
   useEffect(() => {
     setTitle(task.title);
     setDescription(task.description || "");
-    setStatus(task.status);
+    setStatus(task.isCompleted);
   }, [task]);
 
   const handleSave = () => {
-    onUpdate({ ...task, title, description, status });
+    onUpdate({ ...task, title, description, isCompleted });
   };
 
   return (

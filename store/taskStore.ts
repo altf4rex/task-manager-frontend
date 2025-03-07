@@ -8,7 +8,6 @@ export type Task = {
   id: number;
   title: string;
   description?: string;
-  status: "Not Started" | "In Progress" | "Blocked" | "Done";
   priority: "DAY" | "WEEK" | "MONTH";
   isCompleted: boolean;
   isDaily: boolean;

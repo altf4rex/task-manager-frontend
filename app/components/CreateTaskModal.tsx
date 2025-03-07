@@ -41,7 +41,6 @@ export default function CreateTaskModal({
       await createTask({
         title,
         description,
-        status,
         priority,
         scheduledAt,
         categoryId: Number(categoryId),

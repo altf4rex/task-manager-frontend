@@ -25,10 +25,8 @@ export default function TaskCard({ task }: TaskCardProps) {
   };
 
   const statusColor: Record<string, string> = {
-    "Not Started": "#3B82F6",
-    "In Progress": "#F59E0B",
-    Blocked: "#EF4444",
-    Done: "#10B981",
+    "false": "#3B82F6",
+    "true": "#10B981",
   };
 
   return (
@@ -58,10 +56,10 @@ export default function TaskCard({ task }: TaskCardProps) {
                 fontSize: "0.75rem",
                 borderRadius: 1,
                 color: "#fff",
-                backgroundColor: statusColor[task.status] || "#3B82F6",
+                backgroundColor: statusColor[`${task.isCompleted}`] || "#3B82F6",
               }}
             >
-              {task.status}
+              {task.isCompleted}
             </Box>
           </Box>
           {/* Вместо локального onClick => <Link> */}
