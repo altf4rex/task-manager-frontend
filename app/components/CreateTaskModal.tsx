@@ -36,7 +36,13 @@ export default function CreateTaskModal({
   const router = useRouter();
 
   const handleSave = async () => {
-    if (!title || !scheduledAt || !categoryName) return;
+    if (!title || !scheduledAt || !categoryName) {
+      console.log(title)
+      console.log(scheduledAt)
+      console.log(categoryName)
+      console.log("handleSave")
+      return
+    }
     try {
       // Поиск существующей категории (без учета регистра)
       let categoryId: number;
@@ -47,7 +53,7 @@ export default function CreateTaskModal({
         categoryId = existingCategory.id;
       } else {
         // Если категории нет, создаем новую
-        const newCategory = await createCategory({ name: categoryName });
+        await createCategory({ name: categoryName });
         categoryId = categories[categories.length - 1].id;
       }
 

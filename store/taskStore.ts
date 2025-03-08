@@ -71,6 +71,7 @@ export const useStore = create<StoreState>((set, get) => ({
 
   // Загрузка задач с учетом глобального фильтра
   fetchTasks: async (params = {}) => {
+    console.log("fetchTasks")
     try {
       const filter = params.filter ?? get().taskFilter;
       const data = await getAllTasks({ ...params, filter });
@@ -109,6 +110,7 @@ export const useStore = create<StoreState>((set, get) => ({
 
   // Загрузка категорий
   fetchCategories: async () => {
+    console.log("fetchCategories")
     try {
       const data = await getAllCategories();
       set({ categories: data });
