@@ -13,7 +13,11 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { Task } from "@/store/taskStore";
+import { useStore, Task } from "@/store/taskStore"; // Импортируем из useStore
+import { useRouter } from "next/navigation";
+
+const priorities = ["DAY", "WEEK", "MONTH"];
+const dailyOptions = ["Daily", "Not Daily"];
 
 interface TaskModalProps {
   open: boolean;
@@ -22,26 +26,46 @@ interface TaskModalProps {
   onUpdate: (task: Task) => void;
 }
 
-const statuses = ["Not Started", "In Progress", "Blocked", "Done"];
-
-export default function TaskModal({
-  open,
-  task,
-  onClose,
-  onUpdate,
-}: TaskModalProps) {
+export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalProps) {
+  const { categories } = useStore();
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
-  const [isCompleted, setStatus] = useState(task.isCompleted);
+  const [daily, setDaily] = useState<"Daily" | "Not Daily">(task.isDaily ? "Daily" : "Not Daily");
+  const [priority, setPriority] = useState<"DAY" | "WEEK" | "MONTH">(task.priority);
+  const [scheduledAt, setScheduledAt] = useState(task.scheduledAt);
+  const [categoryName, setCategoryName] = useState("");
 
+  // При открытии или изменении задачи обновляем состояния
   useEffect(() => {
     setTitle(task.title);
     setDescription(task.description || "");
-    setStatus(task.isCompleted);
-  }, [task]);
+    setDaily(task.isDaily ? "Daily" : "Not Daily");
+    setPriority(task.priority);
+    setScheduledAt(task.scheduledAt);
+    const currentCategory = categories.find(cat => cat.id === task.categoryId);
+    setCategoryName(currentCategory ? currentCategory.name : "");
+  }, [task, categories]);
 
   const handleSave = () => {
-    onUpdate({ ...task, title, description, isCompleted });
+    let updatedCategoryId = task.categoryId;
+    // Если имя категории изменилось, пытаемся найти уже существующую категорию
+    const existingCategory = categories.find(
+      (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
+    );
+    if (existingCategory) {
+      updatedCategoryId = existingCategory.id;
+    }
+    // Формируем обновлённую задачу
+    const updatedTask: Task = {
+      ...task,
+      title,
+      description,
+      isDaily: daily === "Daily",
+      priority,
+      scheduledAt,
+      categoryId: updatedCategoryId,
+    };
+    onUpdate(updatedTask);
   };
 
   return (
@@ -67,7 +91,7 @@ export default function TaskModal({
       }}
     >
       <DialogTitle sx={{ fontWeight: "bold", fontSize: "1.25rem" }}>
-        Task Details
+        Edit Task
       </DialogTitle>
       <DialogContent dividers>
         <TextField
@@ -89,19 +113,57 @@ export default function TaskModal({
           onChange={(e) => setDescription(e.target.value)}
         />
         <FormControl fullWidth margin="dense" variant="outlined">
-          <InputLabel>Status</InputLabel>
+          <InputLabel>
+            Daily (if not completed, move to the next day)
+          </InputLabel>
           <Select
-            label="Status"
-            value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
+            label="Daily (if not completed, move to the next day)"
+            value={daily}
+            onChange={(e) =>
+              setDaily(e.target.value as "Daily" | "Not Daily")
+            }
           >
-            {statuses.map((s) => (
-              <MenuItem key={s} value={s}>
-                {s}
+            {dailyOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+        <FormControl fullWidth margin="dense" variant="outlined">
+          <InputLabel>Priority</InputLabel>
+          <Select
+            label="Priority"
+            value={priority}
+            onChange={(e) =>
+              setPriority(e.target.value as "DAY" | "WEEK" | "MONTH")
+            }
+          >
+            {priorities.map((p) => (
+              <MenuItem key={p} value={p}>
+                {p}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          label="Scheduled At"
+          type="datetime-local"
+          fullWidth
+          margin="dense"
+          variant="outlined"
+          InputLabelProps={{ shrink: true }}
+          value={scheduledAt}
+          onChange={(e) => setScheduledAt(e.target.value)}
+        />
+        <TextField
+          label="Category"
+          fullWidth
+          margin="dense"
+          variant="outlined"
+          value={categoryName}
+          onChange={(e) => setCategoryName(e.target.value)}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="outlined" color="secondary">

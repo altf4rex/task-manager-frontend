@@ -44,12 +44,12 @@ interface StoreState {
   // Действия для задач
   fetchTasks: (params?: { filter?: string; categoryId?: number }) => Promise<void>;
   createTask: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => Promise<void>;
-  updateTask: (id: number, task: Partial<Task>) => Promise<void>;
+  updateTask: (id: number, task: Partial<Omit<Task, "id" | "createdAt" | "updatedAt">>) => Promise<void>;
   deleteTask: (id: number) => Promise<void>;
   // Действия для категорий
   fetchCategories: () => Promise<void>;
-  createCategory: (category: Omit<Category, "id" | "createdAt" | "updatedAt">) => Promise<void>;
-  updateCategory: (id: number, category: Partial<Category>) => Promise<void>;
+  createCategory: (category: Omit<Category, "id" | "createdAt" | "updatedAt">) => Promise<Category>;
+  updateCategory: (id: number, category: Partial<Omit<Category, "id" | "createdAt" | "updatedAt">>) => Promise<void>;
   deleteCategory: (id: number) => Promise<void>;
   // Действия для авторизации
   loginUser: (credentials: { email: string; password: string }) => Promise<void>;
@@ -69,9 +69,9 @@ export const useStore = create<StoreState>((set, get) => ({
   setTasks: (tasks) => set({ tasks }),
   setCategories: (categories) => set({ categories }),
 
-  // Загрузка задач с учетом глобального фильтра
+  // Загрузка задач с учётом глобального фильтра
   fetchTasks: async (params = {}) => {
-    console.log("fetchTasks")
+    console.log("fetchTasks");
     try {
       const filter = params.filter ?? get().taskFilter;
       const data = await getAllTasks({ ...params, filter });
@@ -110,7 +110,7 @@ export const useStore = create<StoreState>((set, get) => ({
 
   // Загрузка категорий
   fetchCategories: async () => {
-    console.log("fetchCategories")
+    console.log("fetchCategories");
     try {
       const data = await getAllCategories();
       set({ categories: data });
@@ -123,8 +123,10 @@ export const useStore = create<StoreState>((set, get) => ({
     try {
       const newCategory = await createCategory(categoryData);
       set({ categories: [...get().categories, newCategory] });
+      return newCategory;
     } catch (error) {
       console.error("Failed to create category:", error);
+      throw error;
     }
   },
 

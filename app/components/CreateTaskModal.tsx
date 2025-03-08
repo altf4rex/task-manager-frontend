@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { useStore } from "@/store/taskStore";
+import { useStore } from "@/store/taskStore"; // Обратите внимание: импорт изменён на useStore
 import { useRouter } from "next/navigation";
 
 const priorities = ["DAY", "WEEK", "MONTH"];
@@ -37,24 +37,21 @@ export default function CreateTaskModal({
 
   const handleSave = async () => {
     if (!title || !scheduledAt || !categoryName) {
-      console.log(title)
-      console.log(scheduledAt)
-      console.log(categoryName)
-      console.log("handleSave")
-      return
+      console.log(title, scheduledAt, categoryName, "handleSave");
+      return;
     }
     try {
-      // Поиск существующей категории (без учета регистра)
       let categoryId: number;
       const existingCategory = categories.find(
         (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
       );
+
       if (existingCategory) {
         categoryId = existingCategory.id;
       } else {
-        // Если категории нет, создаем новую
-        await createCategory({ name: categoryName });
-        categoryId = categories[categories.length - 1].id;
+        // Если категории нет, создаём новую и получаем её id
+        const newCategory = await createCategory({ name: categoryName });
+        categoryId = newCategory.id;
       }
 
       await createTask({
@@ -122,7 +119,7 @@ export default function CreateTaskModal({
             Daily (if not completed, move to the next day)
           </InputLabel>
           <Select
-            label='Daily (if not completed, move to the next day)'
+            label="Daily (if not completed, move to the next day)"
             value={daily}
             onChange={(e) =>
               setDaily(e.target.value as "Daily" | "Not Daily")
