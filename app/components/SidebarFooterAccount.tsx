@@ -1,11 +1,13 @@
-import React, { useMemo } from 'react';
-import { Account, AccountPreviewProps } from '@toolpad/core/Account';
-import type { SidebarFooterProps } from '@toolpad/core/DashboardLayout';
-import AccountSidebarPreview from './AccountSidebarPreview';
-import SidebarFooterAccountPopover from './SidebarFooterAccountPopover';
+"use client";
+
+import React, { useMemo } from "react";
+import { Account } from "@toolpad/core/Account";
+import type { SidebarFooterProps } from "@toolpad/core/DashboardLayout";
+import AccountSidebarPreview from "./AccountSidebarPreview";
+import SidebarFooterAccountPopover from "./SidebarFooterAccountPopover";
 
 const createPreviewComponent = (mini: boolean) => {
-  const PreviewComponent: React.FC<AccountPreviewProps> = (props) => (
+  const PreviewComponent: React.FC<any> = (props) => (
     <AccountSidebarPreview {...props} mini={mini} />
   );
   return PreviewComponent;

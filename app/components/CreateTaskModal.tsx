@@ -16,8 +16,8 @@ import {
 import { useStore } from "@/store/taskStore";
 import { useRouter } from "next/navigation";
 
-const statuses = ["Not Started", "In Progress", "Blocked", "Done"];
 const priorities = ["DAY", "WEEK", "MONTH"];
+const dailyOptions = ["Daily", "Not Daily"];
 
 export default function CreateTaskModal({
   open,
@@ -28,24 +28,37 @@ export default function CreateTaskModal({
 }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"Not Started" | "In Progress" | "Blocked" | "Done">("Not Started");
+  const [daily, setDaily] = useState<"Daily" | "Not Daily">("Daily");
   const [priority, setPriority] = useState<"DAY" | "WEEK" | "MONTH">("DAY");
   const [scheduledAt, setScheduledAt] = useState("");
-  const [categoryId, setCategoryId] = useState<number | "">("");
-  const { createTask, fetchTasks } = useStore();
+  const [categoryName, setCategoryName] = useState("");
+  const { createTask, fetchTasks, categories, createCategory } = useStore();
   const router = useRouter();
 
   const handleSave = async () => {
-    if (!title || !scheduledAt || !categoryId) return;
+    if (!title || !scheduledAt || !categoryName) return;
     try {
+      // Поиск существующей категории (без учета регистра)
+      let categoryId: number;
+      const existingCategory = categories.find(
+        (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
+      );
+      if (existingCategory) {
+        categoryId = existingCategory.id;
+      } else {
+        // Если категории нет, создаем новую
+        const newCategory = await createCategory({ name: categoryName });
+        categoryId = categories[categories.length - 1].id;
+      }
+
       await createTask({
         title,
         description,
         priority,
         scheduledAt,
-        categoryId: Number(categoryId),
+        categoryId,
         isCompleted: false,
-        isDaily: false,
+        isDaily: daily === "Daily",
       });
       await fetchTasks();
       onClose();
@@ -99,17 +112,19 @@ export default function CreateTaskModal({
           onChange={(e) => setDescription(e.target.value)}
         />
         <FormControl fullWidth margin="dense" variant="outlined">
-          <InputLabel>Status</InputLabel>
+          <InputLabel>
+            Daily (if not completed, move to the next day)
+          </InputLabel>
           <Select
-            label="Status"
-            value={status}
+            label='Daily (if not completed, move to the next day)'
+            value={daily}
             onChange={(e) =>
-              setStatus(e.target.value as "Not Started" | "In Progress" | "Blocked" | "Done")
+              setDaily(e.target.value as "Daily" | "Not Daily")
             }
           >
-            {statuses.map((s) => (
-              <MenuItem key={s} value={s}>
-                {s}
+            {dailyOptions.map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
               </MenuItem>
             ))}
           </Select>
@@ -119,7 +134,9 @@ export default function CreateTaskModal({
           <Select
             label="Priority"
             value={priority}
-            onChange={(e) => setPriority(e.target.value as "DAY" | "WEEK" | "MONTH")}
+            onChange={(e) =>
+              setPriority(e.target.value as "DAY" | "WEEK" | "MONTH")
+            }
           >
             {priorities.map((p) => (
               <MenuItem key={p} value={p}>
@@ -134,20 +151,17 @@ export default function CreateTaskModal({
           fullWidth
           margin="dense"
           variant="outlined"
-          slotProps={{ inputLabel: { shrink: true } }}
+          InputLabelProps={{ shrink: true }}
           value={scheduledAt}
           onChange={(e) => setScheduledAt(e.target.value)}
         />
         <TextField
-          label="Category ID"
-          type="number"
+          label="Category"
           fullWidth
           margin="dense"
           variant="outlined"
-          value={categoryId}
-          onChange={(e) =>
-            setCategoryId(e.target.value === "" ? "" : Number(e.target.value))
-          }
+          value={categoryName}
+          onChange={(e) => setCategoryName(e.target.value)}
         />
       </DialogContent>
       <DialogActions>

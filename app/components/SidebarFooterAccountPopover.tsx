@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React from "react";
 import {
   Stack,
   Typography,
@@ -8,75 +10,87 @@ import {
   ListItemText,
   Avatar,
   Divider,
-} from '@mui/material';
-import { AccountPopoverFooter, SignOutButton } from '@toolpad/core/Account';
+} from "@mui/material";
+import { AccountPopoverFooter } from "@toolpad/core/Account";
+import { useStore } from "@/store/taskStore";
+import { Button } from "@mui/material";;
+import { useRouter } from "next/navigation";
 
-const accounts = [
-  {
-    id: 1,
-    name: "Bharat Kashyap",
-    email: "bharatkashyap@outlook.com",
-    image: "https://avatars.githubusercontent.com/u/19550456",
-    projects: [{ id: 3, title: "Project X" }],
-  },
-  {
-    id: 2,
-    name: "Bharat MUI",
-    email: "bharat@mui.com",
-    color: "#8B4513",
-    projects: [{ id: 4, title: "Project A" }],
-  },
-];
+export function SignOutButtonCustom() {
+  const logout = useStore((state) => state.logout);
+  const router = useRouter();
+
+  const handleSignOut = () => {
+    logout();
+    router.replace("/auth/login");
+  };
+
+  return (
+    <Button onClick={handleSignOut} variant="outlined" color="secondary">
+      Sign Out
+    </Button>
+  );
+}
 
 const SidebarFooterAccountPopover: React.FC = () => {
+  const user = useStore((state) => state.user);
+
+  if (!user) {
+    return (
+      <Stack direction="column" sx={{ p: 2 }}>
+        <Typography variant="body2" align="center">
+          Not logged in
+        </Typography>
+      </Stack>
+    );
+  }
+
   return (
     <Stack direction="column">
       <Typography variant="body2" mx={2} mt={1}>
-        Accounts
+        {user.name || user.email}
       </Typography>
       <MenuList>
-        {accounts.map((account) => (
-          <MenuItem
-            key={account.id}
-            component="button"
-            sx={{
-              justifyContent: "flex-start",
-              width: "100%",
-              columnGap: 2,
-            }}
-          >
-            <ListItemIcon>
-              <Avatar
-                sx={{
-                  width: 32,
-                  height: 32,
-                  fontSize: "0.95rem",
-                  bgcolor: account.color,
-                }}
-                src={account.image ?? ""}
-                alt={account.name ?? ""}
-              >
-                {account.name[0]}
-              </Avatar>
-            </ListItemIcon>
-            <ListItemText
+        <MenuItem
+          key={user.id}
+          component="button"
+          sx={{
+            justifyContent: "flex-start",
+            width: "100%",
+            columnGap: 2,
+          }}
+        >
+          <ListItemIcon>
+            <Avatar
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                width: "100%",
+                width: 32,
+                height: 32,
+                fontSize: "0.95rem",
+                bgcolor: "#EA7C69", // основной акцентный цвет
               }}
-              primary={account.name}
-              secondary={account.email}
-              primaryTypographyProps={{ variant: "body2" }}
-              secondaryTypographyProps={{ variant: "caption" }}
-            />
-          </MenuItem>
-        ))}
+              // src={user.image || ""}
+              alt={user.name || user.email}
+            >
+              {user.name ? user.name[0] : user.email[0]}
+            </Avatar>
+          </ListItemIcon>
+          <ListItemText
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              width: "100%",
+            }}
+            primary={user.name || user.email}
+            secondary={user.email}
+            primaryTypographyProps={{ variant: "body2" }}
+            secondaryTypographyProps={{ variant: "caption" }}
+          />
+        </MenuItem>
       </MenuList>
       <Divider />
       <AccountPopoverFooter>
-        <SignOutButton />
+        <SignOutButtonCustom />
       </AccountPopoverFooter>
     </Stack>
   );
