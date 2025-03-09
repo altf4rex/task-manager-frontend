@@ -30,6 +30,7 @@ export const createTask = async (task: {
   scheduledAt: string;
   categoryId: number;
 }): Promise<Task> => {
+  console.log("createTask data frontend:", task)
   const response = await apiClient.post("/api/v1/tasks", task);
   return response.data;
 };
