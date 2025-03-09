@@ -149,15 +149,23 @@ export default function CreateTaskModal({
           </Select>
         </FormControl>
         <TextField
-          label="Scheduled At"
-          type="datetime-local"
-          fullWidth
-          margin="dense"
-          variant="outlined"
-          InputLabelProps={{ shrink: true }}
-          value={scheduledAt}
-          onChange={(e) => setScheduledAt(e.target.value)}
-        />
+  label="Scheduled At"
+  type="datetime-local"
+  fullWidth
+  margin="dense"
+  variant="outlined"
+  slotProps={{
+    inputLabel: { shrink: true },
+    htmlInput: {
+      pattern: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}",
+      title: "Please enter a date in the format YYYY-MM-DDTHH:mm",
+    },
+  }}
+  value={scheduledAt}
+  onChange={(e) => setScheduledAt(e.target.value)}
+/>
+
+
         <TextField
           label="Category"
           fullWidth
