@@ -8,7 +8,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import type { Navigation } from '@toolpad/core/AppProvider';
 import type { Metadata } from 'next'
-import SessionRestorer from "./components/SessionRestorer";
+
 
 export const metadata: Metadata = {
   title: 'Task Manager',
@@ -39,10 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               navigation={NAVIGATION}
               branding={BRANDING}
             >
-              <SessionRestorer>
-                {children}
-              </SessionRestorer>
-              
+             {children}
             </NextAppProvider>
           </React.Suspense>
         </AppRouterCacheProvider>
