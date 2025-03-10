@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FormControl,
   InputLabel,
@@ -38,11 +38,11 @@ const CompletionButton = styled(Button)(({ theme }) => ({
 }));
 
 export default function CustomToolbarActions() {
-  // Получаем список категорий из глобального store
-  const { categories } = useStore();
+  // Получаем список категорий и функции из глобального состояния
+  const { categories, fetchTasks, fetchCategories } = useStore();
   // Локальное состояние для выбранной категории: либо конкретный id, либо "all"
   const [selectedCategory, setSelectedCategory] = useState<number | "all">("all");
-  // Фильтр по выполненным задачам: "all", "done" или "not-done"
+  // Фильтр по выполненности задач: "all", "done" или "not-done"
   const [completionFilter, setCompletionFilter] = useState<"all" | "done" | "not-done">("all");
   const { mode, setMode } = useColorScheme();
 
@@ -50,18 +50,44 @@ export default function CustomToolbarActions() {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  // Здесь можно добавить эффект или callback для обновления списка задач по фильтрам,
-  // например, вызвать fetchTasks с параметрами { categoryId, completed: ... }
+  // При первоначальной загрузке – загружаем категории (если они еще не загружены)
+  useEffect(() => {
+    if (!categories || categories.length === 0) {
+      fetchCategories();
+    }
+  }, [categories, fetchCategories]);
+
+  // При изменении выбранной категории или фильтра выполненности вызываем fetchTasks с соответствующими параметрами
+  useEffect(() => {
+    const params: any = {};
+
+    // Если выбрана конкретная категория, добавляем ее id
+    if (selectedCategory !== "all") {
+      params.categoryId = selectedCategory;
+    }
+
+    // Если фильтр по выполненности: если "done" – передаем completed: true, если "not-done" – completed: false
+    if (completionFilter === "done") {
+      params.completed = true;
+    } else if (completionFilter === "not-done") {
+      params.completed = false;
+    }
+
+    // Вызываем fetchTasks с заданными параметрами
+    fetchTasks(params);
+  }, [selectedCategory, completionFilter, fetchTasks]);
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-      {/* Выбор категории */}
+      {/* Выпадающий список для выбора категории */}
       <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
         <InputLabel>Category</InputLabel>
         <Select
           label="Category"
           value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value as number | "all")}
+          onChange={(e) =>
+            setSelectedCategory(e.target.value as number | "all")
+          }
         >
           <MenuItem value="all">All</MenuItem>
           {categories.map((cat) => (
@@ -72,7 +98,7 @@ export default function CustomToolbarActions() {
         </Select>
       </FormControl>
 
-      {/* Фильтр по выполненным задачам */}
+      {/* Фильтр по выполненности задач */}
       <StyledButtonGroup variant="contained">
         <CompletionButton
           onClick={() => setCompletionFilter("all")}
@@ -95,7 +121,8 @@ export default function CustomToolbarActions() {
         <CompletionButton
           onClick={() => setCompletionFilter("not-done")}
           style={{
-            backgroundColor: completionFilter === "not-done" ? "#0EA5E9" : "transparent",
+            backgroundColor:
+              completionFilter === "not-done" ? "#0EA5E9" : "transparent",
             color: completionFilter === "not-done" ? "#fff" : undefined,
           }}
         >

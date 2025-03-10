@@ -159,11 +159,13 @@ export default function CreateTaskModal({
     htmlInput: {
       pattern: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}",
       title: "Please enter a date in the format YYYY-MM-DDTHH:mm",
+      maxLength: 16, // Ограничение на 16 символов, что соответствует формату
     },
   }}
   value={scheduledAt}
   onChange={(e) => setScheduledAt(e.target.value)}
 />
+
 
 
         <TextField
