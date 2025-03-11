@@ -1,9 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
-import { Card, CardContent, Typography, IconButton, Box } from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
+import { Card, CardContent, Typography, Box } from "@mui/material";
 import { Task } from "@/store/taskStore";
 
 interface TaskCardProps {
@@ -41,13 +39,6 @@ export default function TaskCard({ task }: TaskCardProps) {
           >
             {task.isCompleted ? "Completed" : "Pending"}
           </Box>
-        </Box>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
-          <Link href={`/tasks/${task.id}`} style={{ color: "inherit" }}>
-            <IconButton size="small" color="primary">
-              <InfoIcon />
-            </IconButton>
-          </Link>
         </Box>
       </CardContent>
     </Card>

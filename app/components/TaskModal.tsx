@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { useStore, Task } from "@/store/taskStore"; // Импортируем из useStore
+import { useStore, Task } from "@/store/taskStore";
 import { useRouter } from "next/navigation";
 
 const priorities = ["DAY", "WEEK", "MONTH"];
@@ -35,27 +35,24 @@ export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalPr
   const [scheduledAt, setScheduledAt] = useState(task.scheduledAt);
   const [categoryName, setCategoryName] = useState("");
 
-  // При открытии или изменении задачи обновляем состояния
   useEffect(() => {
     setTitle(task.title);
     setDescription(task.description || "");
     setDaily(task.isDaily ? "Daily" : "Not Daily");
     setPriority(task.priority);
     setScheduledAt(task.scheduledAt);
-    const currentCategory = categories.find(cat => cat.id === task.categoryId);
+    const currentCategory = categories.find((cat) => cat.id === task.categoryId);
     setCategoryName(currentCategory ? currentCategory.name : "");
   }, [task, categories]);
 
   const handleSave = () => {
     let updatedCategoryId = task.categoryId;
-    // Если имя категории изменилось, пытаемся найти уже существующую категорию
     const existingCategory = categories.find(
       (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
     );
     if (existingCategory) {
       updatedCategoryId = existingCategory.id;
     }
-    // Формируем обновлённую задачу
     const updatedTask: Task = {
       ...task,
       title,
@@ -84,9 +81,7 @@ export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalPr
           },
         },
         backdrop: {
-          sx: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
+          sx: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
         },
       }}
     >
@@ -147,23 +142,22 @@ export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalPr
           </Select>
         </FormControl>
         <TextField
-  label="Scheduled At"
-  type="datetime-local"
-  fullWidth
-  margin="dense"
-  variant="outlined"
-  slotProps={{
-    inputLabel: { shrink: true },
-    htmlInput: {
-      pattern: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}",
-      title: "Please enter a date in the format YYYY-MM-DDTHH:mm",
-      maxLength: 16, // Ограничение на 16 символов, что соответствует формату
-    },
-  }}
-  value={scheduledAt}
-  onChange={(e) => setScheduledAt(e.target.value)}
-/>
-
+          label="Scheduled At"
+          type="datetime-local"
+          fullWidth
+          margin="dense"
+          variant="outlined"
+          slotProps={{
+            inputLabel: { shrink: true },
+            htmlInput: {
+              pattern: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}",
+              title: "Please enter a date in the format YYYY-MM-DDTHH:mm",
+              maxLength: 16,
+            },
+          }}
+          value={scheduledAt}
+          onChange={(e) => setScheduledAt(e.target.value)}
+        />
         <TextField
           label="Category"
           fullWidth
