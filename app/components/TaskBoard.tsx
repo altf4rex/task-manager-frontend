@@ -65,11 +65,6 @@ export default function TaskBoard() {
           open={!!selectedTask}
           task={selectedTask}
           onClose={() => setSelectedTask(null)}
-          onUpdate={(updatedTask) => {
-            // Здесь можно вызвать updateTask из store, если требуется
-            // updateTask(updatedTask.id, updatedTask);
-            setSelectedTask(null);
-          }}
         />
       )}
     </Box>

@@ -14,25 +14,30 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useStore, Task } from "@/store/taskStore";
-import { useRouter } from "next/navigation";
 
 const priorities = ["DAY", "WEEK", "MONTH"];
 const dailyOptions = ["Daily", "Not Daily"];
+
+// Функция для преобразования даты в формат, подходящий для input[type="datetime-local"]
+const formatDateTime = (dateStr: string) => {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+  return d.toISOString().slice(0, 16); // Формат: YYYY-MM-DDTHH:mm
+};
 
 interface TaskModalProps {
   open: boolean;
   task: Task;
   onClose: () => void;
-  onUpdate: (task: Task) => void;
 }
 
-export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalProps) {
-  const { categories } = useStore();
+export default function TaskModal({ open, task, onClose }: TaskModalProps) {
+  const { categories, updateTask, fetchTasks } = useStore();
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
   const [daily, setDaily] = useState<"Daily" | "Not Daily">(task.isDaily ? "Daily" : "Not Daily");
   const [priority, setPriority] = useState<"DAY" | "WEEK" | "MONTH">(task.priority);
-  const [scheduledAt, setScheduledAt] = useState(task.scheduledAt);
+  const [scheduledAt, setScheduledAt] = useState(formatDateTime(task.scheduledAt));
   const [categoryName, setCategoryName] = useState("");
 
   useEffect(() => {
@@ -40,29 +45,36 @@ export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalPr
     setDescription(task.description || "");
     setDaily(task.isDaily ? "Daily" : "Not Daily");
     setPriority(task.priority);
-    setScheduledAt(task.scheduledAt);
+    setScheduledAt(formatDateTime(task.scheduledAt));
     const currentCategory = categories.find((cat) => cat.id === task.categoryId);
     setCategoryName(currentCategory ? currentCategory.name : "");
   }, [task, categories]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     let updatedCategoryId = task.categoryId;
+    // Если имя категории изменилось, ищем в списке категорий
     const existingCategory = categories.find(
       (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
     );
     if (existingCategory) {
       updatedCategoryId = existingCategory.id;
     }
-    const updatedTask: Task = {
-      ...task,
+    const updatedData = {
       title,
       description,
       isDaily: daily === "Daily",
       priority,
-      scheduledAt,
+      scheduledAt, // уже в формате YYYY-MM-DDTHH:mm
       categoryId: updatedCategoryId,
     };
-    onUpdate(updatedTask);
+
+    try {
+      await updateTask(task.id, updatedData);
+      await fetchTasks();
+      onClose();
+    } catch (error) {
+      console.error("Failed to update task:", error);
+    }
   };
 
   return (
@@ -108,15 +120,11 @@ export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalPr
           onChange={(e) => setDescription(e.target.value)}
         />
         <FormControl fullWidth margin="dense" variant="outlined">
-          <InputLabel>
-            Daily (if not completed, move to the next day)
-          </InputLabel>
+          <InputLabel>Daily (if not completed, move to the next day)</InputLabel>
           <Select
             label="Daily (if not completed, move to the next day)"
             value={daily}
-            onChange={(e) =>
-              setDaily(e.target.value as "Daily" | "Not Daily")
-            }
+            onChange={(e) => setDaily(e.target.value as "Daily" | "Not Daily")}
           >
             {dailyOptions.map((option) => (
               <MenuItem key={option} value={option}>
@@ -130,9 +138,7 @@ export default function TaskModal({ open, task, onClose, onUpdate }: TaskModalPr
           <Select
             label="Priority"
             value={priority}
-            onChange={(e) =>
-              setPriority(e.target.value as "DAY" | "WEEK" | "MONTH")
-            }
+            onChange={(e) => setPriority(e.target.value as "DAY" | "WEEK" | "MONTH")}
           >
             {priorities.map((p) => (
               <MenuItem key={p} value={p}>
