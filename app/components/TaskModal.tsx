@@ -18,7 +18,7 @@ import { useStore, Task } from "@/store/taskStore";
 const priorities = ["DAY", "WEEK", "MONTH"];
 const dailyOptions = ["Daily", "Not Daily"];
 
-// Функция для преобразования даты в формат, подходящий для input[type="datetime-local"]
+// Преобразование даты для input[type="datetime-local"]
 const formatDateTime = (dateStr: string) => {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return "";
@@ -52,7 +52,6 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
 
   const handleSave = async () => {
     let updatedCategoryId = task.categoryId;
-    // Если имя категории изменилось, ищем в списке категорий
     const existingCategory = categories.find(
       (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
     );
@@ -64,7 +63,7 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
       description,
       isDaily: daily === "Daily",
       priority,
-      scheduledAt, // уже в формате YYYY-MM-DDTHH:mm
+      scheduledAt, // в формате YYYY-MM-DDTHH:mm
       categoryId: updatedCategoryId,
     };
 

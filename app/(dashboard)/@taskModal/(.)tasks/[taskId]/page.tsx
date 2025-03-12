@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 export default function EditTaskModalPage() {
   const router = useRouter();
   const { taskId } = useParams();
-  const { tasks, updateTask, fetchTasks } = useStore();
+  const { tasks } = useStore();
   const [task, setTask] = useState<any>(null);
 
   useEffect(() => {
@@ -23,11 +23,6 @@ export default function EditTaskModalPage() {
       open={true}
       task={task}
       onClose={() => router.back()}
-      onUpdate={async (updatedTask: any) => {
-        await updateTask(task.id, updatedTask);
-        await fetchTasks();
-        router.back();
-      }}
     />
   );
 }
