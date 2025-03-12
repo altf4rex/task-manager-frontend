@@ -63,7 +63,7 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
       description,
       isDaily: daily === "Daily",
       priority,
-      scheduledAt, // в формате YYYY-MM-DDTHH:mm
+      scheduledAt: new Date(scheduledAt).toISOString(),
       categoryId: updatedCategoryId,
     };
 

@@ -58,11 +58,12 @@ export default function CreateTaskModal({
         title,
         description,
         priority,
-        scheduledAt,
+        scheduledAt: new Date(scheduledAt).toISOString(),
         categoryId,
         isCompleted: false,
         isDaily: daily === "Daily",
       });
+      
       await fetchTasks();
       onClose();
     } catch (error) {
