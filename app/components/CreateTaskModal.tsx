@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { useStore } from "@/store/taskStore"; // Обратите внимание: импорт изменён на useStore
+import { useStore } from "@/store/taskStore";
 import { useRouter } from "next/navigation";
 
 const priorities = ["DAY", "WEEK", "MONTH"];
@@ -32,7 +32,7 @@ export default function CreateTaskModal({
   const [priority, setPriority] = useState<"DAY" | "WEEK" | "MONTH">("DAY");
   const [scheduledAt, setScheduledAt] = useState("");
   const [categoryName, setCategoryName] = useState("");
-  const { createTask, fetchTasks, categories, createCategory } = useStore();
+  const { createTask, categories, createCategory } = useStore();
   const router = useRouter();
 
   const handleSave = async () => {
@@ -63,8 +63,6 @@ export default function CreateTaskModal({
         isCompleted: false,
         isDaily: daily === "Daily",
       });
-      
-      await fetchTasks();
       onClose();
     } catch (error) {
       console.error("Error creating task:", error);
@@ -87,9 +85,7 @@ export default function CreateTaskModal({
           },
         },
         backdrop: {
-          sx: {
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
+          sx: { backgroundColor: "rgba(0, 0, 0, 0.5)" },
         },
       }}
     >
@@ -150,25 +146,22 @@ export default function CreateTaskModal({
           </Select>
         </FormControl>
         <TextField
-  label="Scheduled At"
-  type="datetime-local"
-  fullWidth
-  margin="dense"
-  variant="outlined"
-  slotProps={{
-    inputLabel: { shrink: true },
-    htmlInput: {
-      pattern: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}",
-      title: "Please enter a date in the format YYYY-MM-DDTHH:mm",
-      maxLength: 16, // Ограничение на 16 символов, что соответствует формату
-    },
-  }}
-  value={scheduledAt}
-  onChange={(e) => setScheduledAt(e.target.value)}
-/>
-
-
-
+          label="Scheduled At"
+          type="datetime-local"
+          fullWidth
+          margin="dense"
+          variant="outlined"
+          slotProps={{
+            inputLabel: { shrink: true },
+            htmlInput: {
+              pattern: "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}",
+              title: "Please enter a date in the format YYYY-MM-DDTHH:mm",
+              maxLength: 16,
+            },
+          }}
+          value={scheduledAt}
+          onChange={(e) => setScheduledAt(e.target.value)}
+        />
         <TextField
           label="Category"
           fullWidth

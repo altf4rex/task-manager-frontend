@@ -32,7 +32,7 @@ interface TaskModalProps {
 }
 
 export default function TaskModal({ open, task, onClose }: TaskModalProps) {
-  const { categories, updateTask, fetchTasks, deleteTask} = useStore();
+  const { categories, updateTask, deleteTask } = useStore();
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
   const [daily, setDaily] = useState<"Daily" | "Not Daily">(task.isDaily ? "Daily" : "Not Daily");
@@ -69,7 +69,6 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
 
     try {
       await updateTask(task.id, updatedData);
-      await fetchTasks();
       onClose();
     } catch (error) {
       console.error("Failed to update task:", error);
@@ -79,12 +78,11 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
   const onDelete = async () => {
     try {
       await deleteTask(task.id);
-      await fetchTasks();
       onClose();
     } catch (error) {
       console.error("Failed to delete task:", error);
     }
-  }
+  };
 
   return (
     <Dialog
@@ -183,7 +181,7 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onDelete} variant="outlined" color="error" >
+        <Button onClick={onDelete} variant="outlined" color="error">
           Delete
         </Button>
         <Button onClick={onClose} variant="outlined" color="secondary">

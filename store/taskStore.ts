@@ -36,21 +36,26 @@ interface StoreState {
   tasks: Task[];
   categories: Category[];
   taskFilter: "day" | "week" | "month";
+  isLoading: boolean; // Добавлено свойство загрузки
+
   // Методы для обновления глобальных состояний
   setUser: (user: User | null) => void;
   setTaskFilter: (filter: "day" | "week" | "month") => void;
   setTasks: (tasks: Task[]) => void;
   setCategories: (categories: Category[]) => void;
+
   // Действия для задач
   fetchTasks: (params?: { filter?: string; categoryId?: number }) => Promise<void>;
   createTask: (task: Omit<Task, "id" | "createdAt" | "updatedAt">) => Promise<void>;
   updateTask: (id: number, task: Partial<Omit<Task, "id" | "createdAt" | "updatedAt">>) => Promise<void>;
   deleteTask: (id: number) => Promise<void>;
+
   // Действия для категорий
   fetchCategories: () => Promise<void>;
   createCategory: (category: Omit<Category, "id" | "createdAt" | "updatedAt">) => Promise<Category>;
   updateCategory: (id: number, category: Partial<Omit<Category, "id" | "createdAt" | "updatedAt">>) => Promise<void>;
   deleteCategory: (id: number) => Promise<void>;
+
   // Действия для авторизации
   loginUser: (credentials: { email: string; password: string }) => Promise<void>;
   registerUser: (data: { email: string; password: string; name?: string }) => Promise<void>;
@@ -62,6 +67,7 @@ export const useStore = create<StoreState>((set, get) => ({
   tasks: [],
   categories: [],
   taskFilter: "day",
+  isLoading: false, // Изначальное состояние загрузки
 
   // Установка пользователя, фильтра, задач и категорий
   setUser: (user) => set({ user }),
@@ -72,12 +78,14 @@ export const useStore = create<StoreState>((set, get) => ({
   // Загрузка задач с учётом глобального фильтра
   fetchTasks: async (params = {}) => {
     console.log("fetchTasks");
+    set({ isLoading: true }); // Начало загрузки
     try {
       const filter = params.filter ?? get().taskFilter;
       const data = await getAllTasks({ ...params, filter });
-      set({ tasks: data });
+      set({ tasks: data, isLoading: false }); // Загрузка завершена
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
+      set({ isLoading: false }); // Загрузка завершена даже при ошибке
     }
   },
 

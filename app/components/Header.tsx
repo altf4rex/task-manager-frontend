@@ -103,7 +103,7 @@ export default function CustomToolbarActions() {
         <CompletionButton
           onClick={() => setCompletionFilter("all")}
           style={{
-            backgroundColor: completionFilter === "all" ? "#rgba(0, 90, 133, 0.15)" : "transparent",
+            backgroundColor: completionFilter === "all" ? "#rgba(0, 90, 133, 0.15)" : "#EA7C69",
             color: completionFilter === "all" ? "#fff" : undefined,
           }}
         >
@@ -112,7 +112,7 @@ export default function CustomToolbarActions() {
         <CompletionButton
           onClick={() => setCompletionFilter("done")}
           style={{
-            backgroundColor: completionFilter === "done" ? "#rgba(0, 90, 133, 0.15)" : "transparent",
+            backgroundColor: completionFilter === "done" ? "#rgba(0, 90, 133, 0.15)" : "#EA7C69",
             color: completionFilter === "done" ? "#fff" : undefined,
           }}
         >
@@ -122,7 +122,7 @@ export default function CustomToolbarActions() {
           onClick={() => setCompletionFilter("not-done")}
           style={{
             backgroundColor:
-              completionFilter === "not-done" ? "#rgba(0, 90, 133, 0.15)" : "transparent",
+              completionFilter === "not-done" ? "#rgba(70, 146, 181, 0.15)" : "#EA7C69",
             color: completionFilter === "not-done" ? "#fff" : undefined,
           }}
         >
