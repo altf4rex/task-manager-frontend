@@ -31,8 +31,8 @@ const theme = createTheme({
           paper: "#1F1D2B",      // Фон для боковой панели, футера и т.д.
         },
         text: {
-          primary: "#EA7C69",    // Главный цвет текста
-          secondary: "#C4C4C4",  // Второстепенный текст (нейтрально‑серый)
+          primary: "#EA7C69",
+          secondary: "#C4C4C4",
         },
       },
     },

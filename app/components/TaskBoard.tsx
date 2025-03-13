@@ -16,6 +16,15 @@ export default function TaskBoard() {
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   useEffect(() => {
+    if (selectedTask) {
+      const updatedTask = tasks.find((t) => t.id === selectedTask.id);
+      if (updatedTask && updatedTask !== selectedTask) {
+        setSelectedTask(updatedTask);
+      }
+    }
+  }, [tasks]);
+  
+  useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
