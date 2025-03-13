@@ -19,8 +19,8 @@ const StyledButtonGroup = styled(ButtonGroup)(({ theme }) => ({
   overflow: "hidden",
   backgroundColor:
     theme.palette.mode === "light"
-      ? "rgba(14, 165, 233, 0.15)"
-      : "rgba(14, 165, 233, 0.25)",
+      ? "rgba(0, 90, 133, 0.15)"
+      : "rgba(0, 90, 133, 0.25)",
 }));
 
 const CompletionButton = styled(Button)(({ theme }) => ({
@@ -103,7 +103,7 @@ export default function CustomToolbarActions() {
         <CompletionButton
           onClick={() => setCompletionFilter("all")}
           style={{
-            backgroundColor: completionFilter === "all" ? "#0EA5E9" : "transparent",
+            backgroundColor: completionFilter === "all" ? "#rgba(0, 90, 133, 0.15)" : "transparent",
             color: completionFilter === "all" ? "#fff" : undefined,
           }}
         >
@@ -112,7 +112,7 @@ export default function CustomToolbarActions() {
         <CompletionButton
           onClick={() => setCompletionFilter("done")}
           style={{
-            backgroundColor: completionFilter === "done" ? "#0EA5E9" : "transparent",
+            backgroundColor: completionFilter === "done" ? "#rgba(0, 90, 133, 0.15)" : "transparent",
             color: completionFilter === "done" ? "#fff" : undefined,
           }}
         >
@@ -122,7 +122,7 @@ export default function CustomToolbarActions() {
           onClick={() => setCompletionFilter("not-done")}
           style={{
             backgroundColor:
-              completionFilter === "not-done" ? "#0EA5E9" : "transparent",
+              completionFilter === "not-done" ? "#rgba(0, 90, 133, 0.15)" : "transparent",
             color: completionFilter === "not-done" ? "#fff" : undefined,
           }}
         >

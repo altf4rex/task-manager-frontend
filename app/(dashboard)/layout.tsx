@@ -28,13 +28,13 @@ export default function DashboardSectionLayout({
             branding: {
               logo: (
                 <img
-                  src="https://mui.com/static/logo.png"
-                  alt="My Logo"
+                  src="/favicon.ico"
+                  alt="Logo"
                   style={{ height: 24 }}
                 />
               ),
-              title: "Моя кастомная панель",
-              homeUrl: "/home",
+              title: "Dashboard",
+              homeUrl: "/",
             },
           },
         }}

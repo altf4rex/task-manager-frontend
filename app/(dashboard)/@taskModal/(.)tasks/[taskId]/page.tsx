@@ -4,25 +4,35 @@ import { useRouter, useParams } from "next/navigation";
 import TaskModal from "../../../../components/TaskModal";
 import { useStore } from "@/store/taskStore";
 import { useEffect, useState } from "react";
+import { Box } from "@mui/material";
 
-export default function EditTaskModalPage() {
+export default function EditTaskPage() {
   const router = useRouter();
-  const { taskId } = useParams();
-  const { tasks } = useStore();
-  const [task, setTask] = useState<any>(null);
+  const params = useParams();
+  const taskId = Number(params.id);
+
+  const task = useStore((state) =>
+    state.tasks.find((t) => t.id === taskId)
+  );
 
   useEffect(() => {
-    const foundTask = tasks.find((t) => t.id.toString() === taskId);
-    if (foundTask) setTask(foundTask);
-  }, [taskId, tasks]);
+    if (!task) {
+    }
+  }, [task]);
 
-  if (!task) return null;
+  const handleClose = () => {
+    router.push("/");
+  };
+
+  if (!task) {
+    return <Box>Loading...</Box>;
+  }
 
   return (
     <TaskModal
       open={true}
       task={task}
-      onClose={() => router.back()}
+      onClose={handleClose}
     />
   );
 }

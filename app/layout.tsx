@@ -23,9 +23,9 @@ const NAVIGATION: Navigation = [
 
 // Пример брендинга
 const BRANDING = {
-  logo: <img src="/my-logo.png" alt="My Logo" />,
-  title: 'My Dashboard',
-  homeUrl: '/home',
+  logo: <img src="/favicon.ico" alt="Logo" />,
+  title: 'Dashboard',
+  homeUrl: '/',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

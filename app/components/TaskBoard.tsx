@@ -1,8 +1,6 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+// TaskBoard.tsx
+import React, { useEffect } from "react";
 import TaskCard from "./TaskCard";
-import TaskModal from "./TaskModal";
 import { useStore, Task } from "@/store/taskStore";
 import { Fab, Box } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -13,17 +11,7 @@ const priorities = ["DAY", "WEEK", "MONTH"];
 export default function TaskBoard() {
   const { tasks, fetchTasks } = useStore();
   const router = useRouter();
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  useEffect(() => {
-    if (selectedTask) {
-      const updatedTask = tasks.find((t) => t.id === selectedTask.id);
-      if (updatedTask && updatedTask !== selectedTask) {
-        setSelectedTask(updatedTask);
-      }
-    }
-  }, [tasks]);
-  
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
@@ -47,11 +35,15 @@ export default function TaskBoard() {
               }}
             >
               <Box sx={{ mb: 2 }}>
-                <h2 style={{ marginBottom: 16, color: "#0EA5E9" }}>{priority}</h2>
+                <h2 style={{ marginBottom: 16, color: "#EA7C69" }}>{priority}</h2>
               </Box>
-              {columnTasks.map((task) => (
-                // При клике на карточку открываем модальное окно редактирования
-                <Box key={task.id} onClick={() => setSelectedTask(task)} sx={{ cursor: "pointer" }}>
+              {columnTasks.map((task: Task) => (
+                // При клике переходим на страницу редактирования задачи
+                <Box
+                  key={task.id}
+                  onClick={() => router.push(`/tasks/${task.id}`)}
+                  sx={{ cursor: "pointer" }}
+                >
                   <TaskCard task={task} />
                 </Box>
               ))}
@@ -68,14 +60,6 @@ export default function TaskBoard() {
       >
         <AddIcon />
       </Fab>
-      {/* Модальное окно редактирования, открывается при клике на задачу */}
-      {selectedTask && (
-        <TaskModal
-          open={!!selectedTask}
-          task={selectedTask}
-          onClose={() => setSelectedTask(null)}
-        />
-      )}
     </Box>
   );
 }
