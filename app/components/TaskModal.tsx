@@ -22,7 +22,7 @@ const dailyOptions = ["Daily", "Not Daily"];
 const formatDateTime = (dateStr: string) => {
   const d = new Date(dateStr);
   if (isNaN(d.getTime())) return "";
-  return d.toISOString().slice(0, 16); // Формат: YYYY-MM-DDTHH:mm
+  return d.toISOString().slice(0, 16);
 };
 
 interface TaskModalProps {
@@ -32,7 +32,15 @@ interface TaskModalProps {
 }
 
 export default function TaskModal({ open, task, onClose }: TaskModalProps) {
-  const { categories, updateTask, deleteTask } = useStore();
+  // Подключаем функции для работы с задачами и категориями
+  const {
+    categories,
+    updateTask,
+    deleteTask,
+    createCategory,
+    deleteCategory,
+  } = useStore();
+
   const [title, setTitle] = useState(task.title);
   const [description, setDescription] = useState(task.description || "");
   const [daily, setDaily] = useState<"Daily" | "Not Daily">(task.isDaily ? "Daily" : "Not Daily");
@@ -46,18 +54,28 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
     setDaily(task.isDaily ? "Daily" : "Not Daily");
     setPriority(task.priority);
     setScheduledAt(formatDateTime(task.scheduledAt));
+    // Ищем текущую категорию по id задачи
     const currentCategory = categories.find((cat) => cat.id === task.categoryId);
     setCategoryName(currentCategory ? currentCategory.name : "");
   }, [task, categories]);
 
   const handleSave = async () => {
+    const oldCategoryId = task.categoryId;
     let updatedCategoryId = task.categoryId;
+
+    // Ищем категорию с введённым именем (без учета регистра)
     const existingCategory = categories.find(
       (cat) => cat.name.toLowerCase() === categoryName.toLowerCase()
     );
+
     if (existingCategory) {
       updatedCategoryId = existingCategory.id;
+    } else {
+      // Если такой категории нет, создаём новую
+      const newCategory = await createCategory({ name: categoryName });
+      updatedCategoryId = newCategory.id;
     }
+
     const updatedData = {
       title,
       description,
@@ -70,15 +88,32 @@ export default function TaskModal({ open, task, onClose }: TaskModalProps) {
     try {
       await updateTask(task.id, updatedData);
       onClose();
+
+      // Если категория изменилась, проверяем, используется ли старая категория
+      if (oldCategoryId !== updatedCategoryId) {
+        const allTasks = useStore.getState().tasks;
+        const tasksUsingOldCategory = allTasks.filter((t) => t.categoryId === oldCategoryId);
+        if (tasksUsingOldCategory.length === 0) {
+          await deleteCategory(oldCategoryId);
+        }
+      }
     } catch (error) {
       console.error("Failed to update task:", error);
     }
   };
 
   const onDelete = async () => {
+    const oldCategoryId = task.categoryId;
     try {
       await deleteTask(task.id);
       onClose();
+
+      // После удаления задачи проверяем, не используется ли старая категория другими задачами
+      const allTasks = useStore.getState().tasks;
+      const tasksUsingOldCategory = allTasks.filter((t) => t.categoryId === oldCategoryId);
+      if (tasksUsingOldCategory.length === 0) {
+        await deleteCategory(oldCategoryId);
+      }
     } catch (error) {
       console.error("Failed to delete task:", error);
     }

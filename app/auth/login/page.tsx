@@ -8,6 +8,7 @@ import {
   TextField,
   Button,
   Link,
+  Stack,
 } from "@mui/material";
 import { useStore } from "@/store/taskStore";
 import { useRouter } from "next/navigation";
@@ -18,6 +19,12 @@ export default function LoginPage() {
   const { loginUser } = useStore();
   const router = useRouter();
 
+  // Демо-учётные данные
+  const demoCredentials = {
+    email: "dbdb@gmail.com",
+    password: "58Eb4RsYmsQXm4w",
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -25,6 +32,16 @@ export default function LoginPage() {
       router.push("/");
     } catch (error) {
       console.error("Login failed", error);
+    }
+  };
+
+  // Мгновенный логин для демо-аккаунта
+  const handleDemoLogin = async () => {
+    try {
+      await loginUser(demoCredentials);
+      router.push("/");
+    } catch (error) {
+      console.error("Demo login failed", error);
     }
   };
 
@@ -53,15 +70,24 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 2 }}
-          >
-            Login
-          </Button>
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              Login
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              onClick={handleDemoLogin}
+            >
+              Use Demo Account
+            </Button>
+          </Stack>
         </form>
         <Typography variant="body2" align="center" sx={{ mt: 2 }}>
           Don't have an account?{" "}

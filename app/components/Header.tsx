@@ -14,26 +14,28 @@ import { useColorScheme } from "@mui/material/styles";
 import { ThemeSwitcher } from "@toolpad/core/DashboardLayout";
 import { useStore } from "@/store/taskStore";
 
+interface CompletionButtonProps {
+  active?: boolean;
+}
+
 const StyledButtonGroup = styled(ButtonGroup)(({ theme }) => ({
   borderRadius: "8px!important",
   overflow: "hidden",
-  backgroundColor:
-    theme.palette.mode === "light"
-      ? "rgba(0, 90, 133, 0.15)"
-      : "rgba(0, 90, 133, 0.25)",
+  backgroundColor: "transparent",
 }));
 
-const CompletionButton = styled(Button)(({ theme }) => ({
+const CompletionButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "active",
+})<CompletionButtonProps>(({ active, theme }) => ({
   textTransform: "none",
   fontWeight: 500,
   padding: "6px 20px",
-  color: theme.palette.text.primary,
+  backgroundColor: active ? "#EA7C69" : "transparent",
+  color: "#fff",
   transition: "all 0.2s ease",
   "&:hover": {
-    backgroundColor:
-      theme.palette.mode === "light"
-        ? "rgba(14, 165, 233, 0.3)"
-        : "rgba(14, 165, 233, 0.45)",
+    backgroundColor: active ? "#EA7C69" : "transparent",
+    opacity: 0.9,
   },
 }));
 
@@ -50,7 +52,7 @@ export default function CustomToolbarActions() {
     setMode(mode === "light" ? "dark" : "light");
   };
 
-  // При первоначальной загрузке – загружаем категории (если они еще не загружены)
+  // Загружаем категории, если они ещё не загружены
   useEffect(() => {
     if (!categories || categories.length === 0) {
       fetchCategories();
@@ -61,24 +63,21 @@ export default function CustomToolbarActions() {
   useEffect(() => {
     const params: any = {};
 
-    // Если выбрана конкретная категория, добавляем ее id
     if (selectedCategory !== "all") {
       params.categoryId = selectedCategory;
     }
 
-    // Если фильтр по выполненности: если "done" – передаем completed: true, если "not-done" – completed: false
     if (completionFilter === "done") {
       params.completed = true;
     } else if (completionFilter === "not-done") {
       params.completed = false;
     }
 
-    // Вызываем fetchTasks с заданными параметрами
     fetchTasks(params);
   }, [selectedCategory, completionFilter, fetchTasks]);
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 16,}}>
       {/* Выпадающий список для выбора категории */}
       <FormControl variant="outlined" size="small" sx={{ minWidth: 150 }}>
         <InputLabel>Category</InputLabel>
@@ -99,32 +98,22 @@ export default function CustomToolbarActions() {
       </FormControl>
 
       {/* Фильтр по выполненности задач */}
-      <StyledButtonGroup variant="contained">
+      <StyledButtonGroup variant="contained" style={  {border: "1px solid rgb(105 97 97)"} }>
         <CompletionButton
+          active={completionFilter === "all"}
           onClick={() => setCompletionFilter("all")}
-          style={{
-            backgroundColor: completionFilter === "all" ? "#rgba(0, 90, 133, 0.15)" : "#EA7C69",
-            color: completionFilter === "all" ? "#fff" : undefined,
-          }}
         >
           All
         </CompletionButton>
         <CompletionButton
+          active={completionFilter === "done"}
           onClick={() => setCompletionFilter("done")}
-          style={{
-            backgroundColor: completionFilter === "done" ? "#rgba(0, 90, 133, 0.15)" : "#EA7C69",
-            color: completionFilter === "done" ? "#fff" : undefined,
-          }}
         >
           Done
         </CompletionButton>
         <CompletionButton
+          active={completionFilter === "not-done"}
           onClick={() => setCompletionFilter("not-done")}
-          style={{
-            backgroundColor:
-              completionFilter === "not-done" ? "#rgba(70, 146, 181, 0.15)" : "#EA7C69",
-            color: completionFilter === "not-done" ? "#fff" : undefined,
-          }}
         >
           Not Done
         </CompletionButton>

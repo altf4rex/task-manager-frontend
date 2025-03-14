@@ -77,7 +77,6 @@ export const useStore = create<StoreState>((set, get) => ({
 
   // Загрузка задач с учётом глобального фильтра
   fetchTasks: async (params = {}) => {
-    console.log("fetchTasks");
     set({ isLoading: true }); // Начало загрузки
     try {
       const filter = params.filter ?? get().taskFilter;
