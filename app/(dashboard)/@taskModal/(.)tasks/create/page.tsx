@@ -7,9 +7,6 @@ export default function CreateTaskModalPage() {
   const router = useRouter();
 
   return (
-    <CreateTaskModal
-      open={true}
-      onClose={() => router.back()}
-    />
+    <CreateTaskModal open={true} onClose={() => router.back()} />
   );
 }

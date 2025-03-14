@@ -11,7 +11,7 @@ export default function TaskBoard() {
   const { tasks, fetchTasks, isLoading } = useStore();
   const router = useRouter();
 
-  // Если fetchTasks не стабилизирована, можно использовать useCallback
+  // Оборачиваем fetchTasks в useCallback для стабильности
   const loadTasks = useCallback(() => {
     fetchTasks();
   }, [fetchTasks]);
@@ -23,31 +23,17 @@ export default function TaskBoard() {
   return (
     <Box sx={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
       {isLoading ? (
-        <Box
-          sx={{
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <Box sx={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <CircularProgress />
         </Box>
       ) : tasks.length === 0 ? (
-        <Box
-          sx={{
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
+        <Box sx={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <Typography variant="h6">Нет задач</Typography>
         </Box>
       ) : (
         <Box sx={{ display: "flex", gap: 2, height: "100%" }}>
           {priorities.map((priority) => {
-            // Фильтруем задачи по приоритету
+            // Фильтрация задач по приоритету
             const columnTasks = tasks.filter((task) => task.priority === priority);
             return (
               <Box
@@ -62,7 +48,9 @@ export default function TaskBoard() {
                 }}
               >
                 <Box sx={{ mb: 2 }}>
-                  <h2 style={{ marginBottom: 16, color: "#EA7C69" }}>{priority}</h2>
+                  <Typography variant="h5" sx={{ mb: 2, color: "#EA7C69" }}>
+                    {priority}
+                  </Typography>
                 </Box>
                 {columnTasks.map((task: Task) => (
                   // При клике переходим на страницу редактирования задачи

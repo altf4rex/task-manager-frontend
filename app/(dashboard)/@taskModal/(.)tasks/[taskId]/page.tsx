@@ -12,15 +12,14 @@ export default function EditTaskPage() {
   const taskId = Number(params.id);
   const { tasks, fetchTasks } = useStore();
 
-  // Ищем задачу по id в store
-  const task = tasks.find((t) => t.id === taskId);
-
-  // Если задача не найдена, пытаемся загрузить её
+  // Если задачи ещё не загружены, вызываем fetchTasks
   useEffect(() => {
-    if (!task) {
+    if (tasks.length === 0) {
       fetchTasks();
     }
-  }, [task, fetchTasks]);
+  }, [tasks, fetchTasks]);
+
+  const task = tasks.find((t) => t.id === taskId);
 
   const handleClose = () => {
     router.push("/");
@@ -31,10 +30,6 @@ export default function EditTaskPage() {
   }
 
   return (
-    <TaskModal
-      open={true}
-      task={task}
-      onClose={handleClose}
-    />
+    <TaskModal open={true} task={task} onClose={handleClose} />
   );
 }
