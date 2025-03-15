@@ -14,14 +14,12 @@ export const metadata: Metadata = {
   title: 'Task Manager',
   description: 'Manage your life',
 }
-// Пример навигации
+
 const NAVIGATION: Navigation = [
-  { kind: 'header', title: 'Main items' },
+  { kind: 'header', title: 'Pages' },
   { segment: '', title: 'Dashboard', icon: <DashboardIcon /> },
-  { segment: 'orders', title: 'Orders', icon: <ShoppingCartIcon /> },
 ];
 
-// Пример брендинга
 const BRANDING = {
   logo: <img src="/favicon.ico" alt="Logo" />,
   title: 'Dashboard',
